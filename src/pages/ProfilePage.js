@@ -46,13 +46,14 @@ function ProfilePage() {
             src={profile.profilePicture || defaultProfilePicture}
             alt={profile.username}
             onError={(e) => { e.target.onerror = null; e.target.src = defaultProfilePicture; }}
+            style={{ objectFit: 'cover', objectPosition: 'center' }} // <--- Tambahkan style ini
           />
         </figure>
         <h1 className="title is-3">{profile.fullName || profile.username}</h1>
         <h2 className="subtitle is-5 has-text-grey">@{profile.username}</h2>
         <p className="mb-2">Email: {profile.email}</p>
         <p className="mb-2">Peran: <span className="tag is-info is-light">{profile.role}</span></p>
-        <p className="mb-4">Bergabung sejak: {profile.createdAt ? format(new Date(profile.createdAt), 'dd MMMM yyyy') : 'Invalid Date'}</p> {/* <-- Diperbaiki di sini */}
+        <p className="mb-4">Bergabung sejak: {profile.createdAt ? format(new Date(profile.createdAt), 'dd MMMM yyyy') : 'Invalid Date'}</p>
 
         {isOwner && (
           <div className="buttons is-centered">

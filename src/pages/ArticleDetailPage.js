@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext'; // <--- PERBAIKAN DI SINI: Ubah dari '../contexts/Auth'
 import { format } from 'date-fns';
 
 function ArticleDetailPage() {
@@ -124,13 +124,17 @@ function ArticleDetailPage() {
         <h1 className="title is-2">{article.title}</h1>
         <p className="subtitle is-6 has-text-grey">
           Oleh: {article.User?.fullName || article.User?.username || 'Anonim'} | Kategori: {article.Category?.name || 'Tidak Diketahui'} | Dipublikasikan: 
-          {article.createdAt ? format(new Date(article.createdAt), 'dd MMMM LikeLike HH:mm') : 'Tanggal tidak tersedia'}
+          {/* PERBAIKAN DI SINI: Ubah 'iedenis' menjadi 'yyyy' */}
+          {article.createdAt ? format(new Date(article.createdAt), 'dd MMMM yyyy HH:mm') : 'Tanggal tidak tersedia'}
         </p>
-        <figure className="image is-4by3 mb-4">
+        {/* PERBAIKAN DI SINI: Kontrol ukuran gambar */}
+        {/* Hapus kelas is-4by3 dari figure, tambahkan style max-width dan margin auto untuk centering */}
+        <figure className="image mb-4 is-flex is-justify-content-center" style={{ maxWidth: '800px', margin: '0 auto' }}> 
           <img 
             src={article.imageUrl || defaultImageUrl} 
             alt={article.title} 
             onError={(e) => { e.target.onerror = null; e.target.src = defaultImageUrl; }}
+            style={{ width: '100%', height: 'auto', objectFit: 'contain' }} // Pastikan gambar mengisi figure dan menjaga rasio
           />
         </figure>
         <div className="content" dangerouslySetInnerHTML={{ __html: article.content }}>
@@ -211,7 +215,8 @@ function ArticleDetailPage() {
                     <div className="content">
                       <p>
                         <strong>{comment.User?.fullName || comment.User?.username || 'Anonim'}</strong> <small>
-                          {comment.createdAt ? format(new Date(comment.createdAt), 'dd MMMM LikeLike HH:mm') : 'Tanggal tidak tersedia'}
+                          {/* PERBAIKAN DI SINI: Ubah 'iedenis' menjadi 'yyyy' */}
+                          {comment.createdAt ? format(new Date(comment.createdAt), 'dd MMMM yyyy HH:mm') : 'Tanggal tidak tersedia'}
                         </small>
                         <br />
                         {comment.content}
@@ -220,8 +225,8 @@ function ArticleDetailPage() {
                   )}
                 </div>
                 {/* Tombol Aksi Komentar (Hapus & Edit) */}
-                {/* PERBAIKAN DI SINI: Hanya pemilik komentar yang bisa mengedit */}
-                {(isAuthenticated && user && user.id === comment.userId) && ( // <--- UBAH KONDISI INI
+                {/* Hanya pemilik komentar yang bisa mengedit */}
+                {(isAuthenticated && user && user.id === comment.userId) && (
                   <div className="media-right">
                     {editingCommentId !== comment.id && ( // Tampilkan tombol edit jika tidak sedang diedit
                       <button 
@@ -232,7 +237,7 @@ function ArticleDetailPage() {
                       </button>
                     )}
                     {/* Tombol Hapus: Tetap bisa dihapus oleh pemilik atau Admin */}
-                    {(user.id === comment.userId || user.role === 'admin') && ( // <--- KONDISI HAPUS TETAP SAMA
+                    {(user.id === comment.userId || user.role === 'admin') && (
                       <button 
                         onClick={() => handleDeleteComment(comment.id)}
                         className="delete" // Bulma delete icon
