@@ -1,0 +1,23 @@
+runtime: nodejs20
+service: frontend-fahmi-028 
+instance_class: F1
+
+handlers:
+  # Serve static assets (CSS, JS, images)
+  - url: /static
+    static_dir: build/static
+    secure: always
+
+  # Serve other static files (favicon, manifest, etc)
+  - url: /(.*\.(json|ico|js|css|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))$
+    static_files: build/\1
+    upload: build/.*\.(json|ico|js|css|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$
+    secure: always
+
+  # Catch-all handler for SPA routing - always serve index.html
+  - url: /.*
+    static_files: build/index.html
+    upload: build/index.html
+    secure: always
+
+default_expiration: "1h"
